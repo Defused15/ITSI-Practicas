@@ -46,7 +46,7 @@ El workflow exportado está en [`workflows/Practica-3.json`](workflows/Practica-
 
 ## 2. Ejecución
 
-En la ejecución de la captura, los 10 chistes se reparten en 7 de `Programming`, 1 de `Misc` y 2 de `Dark`. El reparto puede cambiar entre ejecuciones, porque depende de los chistes que devuelva la API.
+En la ejecución de la captura, los 10 chistes se reparten en 4 de `Programming`, 2 de `Misc` y 4 de `Dark`. El reparto puede cambiar entre ejecuciones, porque depende de los chistes que devuelva la API.
 
 ![Ejecución correcta del workflow](docs/img/02-ejecucion.png)
 
@@ -68,9 +68,9 @@ Añade una fila por chiste en la hoja correspondiente. Ejemplo de la salida del 
 
 ```json
 {
-  "ID": 300,
-  "Chiste": "I have a joke about Stack Overflow, but you would say it's a duplicate.",
-  "Fecha de Procesamiento": "2026-11-03T04:16:30.910-05:00"
+  "ID": 258,
+  "Chiste": "UDP is better in the COVID era since it avoids unnecessary handshakes.",
+  "Fecha de Procesamiento": "2026-11-03T10:28:15.681+01:00"
 }
 ```
 
@@ -81,3 +81,19 @@ Añade una fila por chiste en la hoja correspondiente. Ejemplo de la salida del 
 Reúne las filas escritas por las tres ramas en una única salida de 10 ítems.
 
 ![Configuración y salida del nodo Merge](docs/img/06-merge.png)
+
+## 3. Resultado en Google Sheets
+
+Cada chiste queda en la hoja de su categoría, con su `ID` y la fecha de procesamiento.
+
+### Hoja `Programming`
+
+![Filas escritas en la hoja Programming](docs/img/07-hoja-programming.png)
+
+### Hoja `Misc`
+
+![Filas escritas en la hoja Misc](docs/img/08-hoja-misc.png)
+
+### Hoja `Dark`
+
+![Filas escritas en la hoja Dark](docs/img/09-hoja-dark.png)
