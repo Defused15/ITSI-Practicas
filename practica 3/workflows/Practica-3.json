@@ -1,0 +1,472 @@
+{
+  "name": "Practica 3",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -160
+      ],
+      "id": "595d38bc-f3bc-48ed-9415-e7dc882080d1",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://v2.jokeapi.dev/joke/Programming,Misc,Dark?type=single&amount=10",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -32,
+        -160
+      ],
+      "id": "ed078bbf-ab2b-4aa7-a1eb-3450de316d30",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "jokes",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        192,
+        -160
+      ],
+      "id": "24454422-5d48-4820-a906-204e6822da17",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.jokes.category }}",
+                    "rightValue": "Programming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b68ffdd5-d3e5-4b29-8b04-f33c7afb182f"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "9cf3b9be-6cde-40eb-9726-43df8522d50b",
+                    "leftValue": "={{ $json.jokes.category }}",
+                    "rightValue": "Misc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 4
+                },
+                "conditions": [
+                  {
+                    "id": "623fd3e5-4e62-41df-89b8-3c2f6a1763a0",
+                    "leftValue": "={{ $json.jokes.category }}",
+                    "rightValue": "Dark",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.5,
+      "position": [
+        416,
+        -176
+      ],
+      "id": "111dc4ce-269a-4a94-9417-71c6049d9c37",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY",
+          "mode": "list",
+          "cachedResultName": "Clasificación de Chistes n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Programming",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.jokes.id }}",
+            "Chiste": "={{$json.jokes.joke  }}",
+            "Fecha de Procesamiento": "={{ $now  }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Chiste",
+              "displayName": "Chiste",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha de Procesamiento",
+              "displayName": "Fecha de Procesamiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        -352
+      ],
+      "id": "207ecaa3-5b09-49e2-bf0c-6fa5a6756a12",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY",
+          "mode": "list",
+          "cachedResultName": "Clasificación de Chistes n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 975661975,
+          "mode": "list",
+          "cachedResultName": "Misc",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY/edit#gid=975661975"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{$json.jokes.id  }}",
+            "Chiste": "={{ $json.jokes.joke }}",
+            "Fecha de Procesamiento": "={{$now  }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Chiste",
+              "displayName": "Chiste",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha de Procesamiento",
+              "displayName": "Fecha de Procesamiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        -160
+      ],
+      "id": "95642746-aa57-4f1e-8f27-69b3cf9756a1",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY",
+          "mode": "list",
+          "cachedResultName": "Clasificación de Chistes n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2114314831,
+          "mode": "list",
+          "cachedResultName": "Dark",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY/edit#gid=2114314831"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.jokes.id }}",
+            "Chiste": "={{ $json.jokes.joke }}",
+            "Fecha de Procesamiento": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Chiste",
+              "displayName": "Chiste",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Fecha de Procesamiento",
+              "displayName": "Fecha de Procesamiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        640,
+        32
+      ],
+      "id": "ae5715d8-260c-4909-83fa-c5c5a98de5ee",
+      "name": "Append row in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        864,
+        -176
+      ],
+      "id": "a836ed46-7f4f-4953-af20-163259267c44",
+      "name": "Merge"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet2": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "90ce811f-0340-4b90-80ca-25e4d7eaec8f",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "nodeGroups": [],
+  "id": "76cxPan5LVbKw2UR",
+  "tags": []
+}
