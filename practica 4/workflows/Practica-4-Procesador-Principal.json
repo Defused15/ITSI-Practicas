@@ -1,0 +1,146 @@
+{
+  "name": "Procesador Principal de imagenes",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "779736f5-7402-4332-92de-ff45f0615ac7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3756a54a-3207-4cc6-bf9f-38876fa90237",
+              "name": "imageUrls",
+              "value": "[   {\"imageUrl\": \"https://placedog.net/320/240\"},   {\"imageUrl\": \"https://dummyimage.com/320x240\"},   {\"imageUrl\": \"https://esta-url-no-existe.xyz/imagen.jpg\"} ]",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "39399963-7f65-457c-9c81-7b248ecf1931",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "imageUrls",
+        "include": "allOtherFields",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "cb29df13-ed11-44e5-a55a-75f896e0d57a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "VZQPG8PgYJ4kTJFj",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/VZQPG8PgYJ4kTJFj",
+          "cachedResultName": "Sub-flujo: Descargador de imagenes"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Image": "={{ $json.imageUrls.imageUrl }}"
+          },
+          "matchingColumns": [
+            ""
+          ],
+          "schema": [
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.4,
+      "position": [
+        672,
+        0
+      ],
+      "id": "3d520cdf-613a-40b9-94ca-e78b8b5f41ee",
+      "name": "Call 'Sub-flujo: Descargador de imagenes'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Call 'Sub-flujo: Descargador de imagenes'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "LJQhBFxk7F0jSUxK",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "d2b48eef-3ef7-4645-8974-10911c7e97dd",
+  "meta": {},
+  "id": "ztFKAb2QLItzxASQ",
+  "tags": []
+}
