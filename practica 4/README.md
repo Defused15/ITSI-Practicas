@@ -1,7 +1,8 @@
-# Práctica 4: Sub-flujos y gestión centralizada de errores
+# Práctica 4: Robustez y modularidad - Manejo de errores y sub-flujos de trabajo
 
 **Asignatura:** Integración de Tecnologías y Servicios Informáticos (ITSI)
-**Alumno:** Roberto Castillo — rct419@inlumine.ual.es
+**Alumno:** Roberto Castillo — rct419@inlumine.ual.es  
+**Enunciado:** https://ualitsi.github.io/n8n-004/
 
 Solución formada por tres workflows: uno principal que recorre una lista de URLs de imágenes, un sub-flujo que descarga cada imagen y un manejador que registra los errores en Google Sheets. Una de las URLs no existe a propósito, para comprobar que el error queda registrado.
 

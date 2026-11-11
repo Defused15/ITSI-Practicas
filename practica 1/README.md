@@ -1,7 +1,8 @@
 # Práctica 1 — Introducción a n8n
 
 **Asignatura:** Integración de Tecnologías y Servicios Informáticos (ITSI)
-**Alumno:** Roberto Castillo — rct419@inlumine.ual.es
+**Alumno:** Roberto Castillo — rct419@inlumine.ual.es  
+**Enunciado:** https://ualitsi.github.io/n8n-001/
 
 Primer workflow en n8n que genera un mensaje, consulta una API pública de chistes de programación y extrae los campos relevantes de la respuesta.
 

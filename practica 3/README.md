@@ -1,7 +1,8 @@
 # Práctica 3: Enrutamiento avanzado, fusión de datos e integración con Google Sheets
 
 **Asignatura:** Integración de Tecnologías y Servicios Informáticos (ITSI)
-**Alumno:** Roberto Castillo — rct419@inlumine.ual.es
+**Alumno:** Roberto Castillo — rct419@inlumine.ual.es  
+**Enunciado:** https://ualitsi.github.io/n8n-003/
 
 Workflow que pide 10 chistes a JokeAPI, los clasifica por categoría con un nodo Switch y escribe cada uno en su hoja de un documento de Google Sheets. Al final, un nodo Merge une las tres ramas.
 

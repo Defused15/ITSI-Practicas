@@ -1,7 +1,8 @@
 # Práctica 2: Lógica, programación y manejo de colecciones en n8n
 
 **Asignatura:** Integración de Tecnologías y Servicios Informáticos (ITSI)
-**Alumno:** Roberto Castillo — rct419@inlumine.ual.es
+**Alumno:** Roberto Castillo — rct419@inlumine.ual.es  
+**Enunciado:** https://ualitsi.github.io/n8n-002/
 
 Workflow que se ejecuta cada minuto, pide 5 chistes de programación a JokeAPI, los separa en ítems individuales y los clasifica como seguros o no seguros según el campo `safe`.
 
