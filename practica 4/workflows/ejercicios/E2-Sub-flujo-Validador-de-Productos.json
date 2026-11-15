@@ -1,0 +1,140 @@
+{
+  "name": "Sub-flujo: Validador de Productos",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "name": "When Executed by Another Workflow",
+      "id": "a2f25682-b996-482d-8bdc-16fa66165558"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "baa65196-4569-41f8-b67c-ca246b58dfd0",
+              "leftValue": "={{ $json.title }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "602036f3-b422-48d9-97cc-85c3fab913df",
+              "leftValue": "={{ $json.price }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "name": "If",
+      "id": "8e125423-0106-4542-9d56-a3d8ddaf990d"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "18a36a61-0d6f-418f-b6c2-6397972ba5b0",
+              "name": "validacion",
+              "value": "OK",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        -100
+      ],
+      "name": "Edit Fields",
+      "id": "7f7923e7-06b8-4f08-b2a3-d0431e32494e"
+    },
+    {
+      "parameters": {
+        "errorMessage": "Validación fallida: Faltan campos de producto obligatorios"
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        440,
+        100
+      ],
+      "name": "Stop and Error",
+      "id": "607fd18e-19b3-41f7-8624-672c5d37ac02"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "LJQhBFxk7F0jSUxK",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "4099330a-3cbe-45ad-8b09-233f106fa058",
+  "meta": {},
+  "id": "GypOEho42idKCAgo",
+  "tags": []
+}

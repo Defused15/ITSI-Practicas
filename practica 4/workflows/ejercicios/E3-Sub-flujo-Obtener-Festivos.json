@@ -1,0 +1,55 @@
+{
+  "name": "Sub-flujo: Obtener Festivos",
+  "nodes": [
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "name": "When Executed by Another Workflow",
+      "id": "fb3e1493-fef5-4cf8-bf0a-bfd3bb7361c8"
+    },
+    {
+      "parameters": {
+        "url": "https://date.nager.at/api/v3/PublicHolidays/2026/ES",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "name": "HTTP Request",
+      "id": "bde8e369-000a-44e2-92c9-24dcb61e4c33"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "a2173901-4f0f-4675-aa33-21f2526eed66",
+  "meta": {},
+  "id": "BOqoVsuuR76tr6Jn",
+  "tags": []
+}

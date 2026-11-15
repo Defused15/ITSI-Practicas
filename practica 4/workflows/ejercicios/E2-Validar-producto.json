@@ -1,0 +1,114 @@
+{
+  "name": "Ejercicio 2 - Validar producto",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "name": "When clicking ‘Execute workflow’",
+      "id": "7802e09b-8f2f-4147-a267-f61c0f68a9f0"
+    },
+    {
+      "parameters": {
+        "url": "https://fakestoreapi.com/products/1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "name": "HTTP Request",
+      "id": "6be2c0e1-215d-40c5-9ff0-086a0ad04084"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": []
+        },
+        "includeOtherFields": true,
+        "include": "except",
+        "excludeFields": "price",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        0
+      ],
+      "name": "Edit Fields",
+      "id": "7e468ee7-e9f3-4793-b7b8-b5d30f358fd0"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GypOEho42idKCAgo",
+          "mode": "list",
+          "cachedResultName": "Sub-flujo: Validador de Productos",
+          "cachedResultUrl": "/workflow/GypOEho42idKCAgo"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        660,
+        0
+      ],
+      "name": "Call 'Sub-flujo: Validador de Productos'",
+      "id": "1dc6eab3-d425-42ed-89e3-64cab750117a"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'Sub-flujo: Validador de Productos'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "LJQhBFxk7F0jSUxK"
+  },
+  "versionId": "503ed52a-5897-4d09-b36c-bf651e3cbbf2",
+  "meta": {},
+  "id": "le2Wi89HukFxtv5t",
+  "tags": []
+}

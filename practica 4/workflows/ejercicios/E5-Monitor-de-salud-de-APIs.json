@@ -1,0 +1,325 @@
+{
+  "name": "Ejercicio 5 - Monitor de salud de APIs",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "name": "Schedule Trigger",
+      "id": "1f4e4f20-1121-418d-8201-33698d96a0b9"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"apis\": [\n    {\n      \"url\": \"https://fakestoreapi.com/products/1\"\n    },\n    {\n      \"url\": \"https://v2.jokeapi.dev/joke/Programming?type=single\"\n    },\n    {\n      \"url\": \"https://date.nager.at/api/v3/PublicHolidays/2026/ES\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "name": "Edit Fields",
+      "id": "02915ad7-4a48-45e1-9e6e-80da4341faef"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "apis",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "name": "Split Out",
+      "id": "dc31b805-1f05-48ea-8efe-fab69f879187"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Zc4uwWOxvFVTqnia",
+          "mode": "list",
+          "cachedResultName": "Sub-flujo: Comprobar API",
+          "cachedResultUrl": "/workflow/Zc4uwWOxvFVTqnia"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "url": "={{ $json.url }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "url",
+              "displayName": "url",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.4,
+      "position": [
+        660,
+        0
+      ],
+      "name": "Call 'Sub-flujo: Comprobar API'",
+      "onError": "continueRegularOutput",
+      "id": "4d0cc6e4-0e51-4ad3-afc4-de8dc9e252cc"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "e2596427-af94-4e7c-98b6-cb25e1f3defc",
+              "leftValue": "={{ $json.estado }}",
+              "rightValue": "OK",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        880,
+        0
+      ],
+      "name": "If",
+      "id": "a81a5f76-80e9-46b4-958f-5a906e4f9f5f"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1D5KLrV0P3kODCFAqXV6ekeB3pQoJTTcEGG7b2pOcoK0",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Salud_OK",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "URL": "={{ $('Split Out').item.json.url }}",
+            "Hora": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hora",
+              "displayName": "Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1100,
+        -100
+      ],
+      "name": "Append row in Salud_OK",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      },
+      "id": "e6a40e87-8e1c-4f6c-b526-5d0569a40dfa"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1D5KLrV0P3kODCFAqXV6ekeB3pQoJTTcEGG7b2pOcoK0",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Salud_Fallo",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "URL": "={{ $('Split Out').item.json.url }}",
+            "Hora": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "URL",
+              "displayName": "URL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hora",
+              "displayName": "Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1100,
+        100
+      ],
+      "name": "Append row in Salud_Fallo",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      },
+      "id": "ba7259a6-e35c-4de1-a626-30e0b83c1751"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Call 'Sub-flujo: Comprobar API'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Sub-flujo: Comprobar API'": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in Salud_OK",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in Salud_Fallo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "LJQhBFxk7F0jSUxK"
+  },
+  "versionId": "a0c57e02-cd6b-4965-b4e1-db2ff4a4ee14",
+  "meta": {},
+  "id": "1bkTXr5MInwyxFkN",
+  "tags": []
+}

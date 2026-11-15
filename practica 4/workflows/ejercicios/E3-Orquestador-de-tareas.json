@@ -1,0 +1,260 @@
+{
+  "name": "Ejercicio 3 - Orquestador de tareas",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "name": "When clicking ‘Execute workflow’",
+      "id": "77979a3a-b38b-49cd-9e57-8d2521a508cd"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c3d73ff5-f04b-4bf4-95c9-364abb650093",
+              "name": "tarea",
+              "value": "actividad",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "name": "Definir tarea",
+      "id": "4855f6da-b7ec-4c4f-8291-8c1a7bb416bc"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "1a5d6ecd-4dc8-48a7-86dc-cbec256e12c5",
+                    "leftValue": "={{ $json.tarea }}",
+                    "rightValue": "actividad",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "726a643d-34a0-4227-98a4-f0315709b081",
+                    "leftValue": "={{ $json.tarea }}",
+                    "rightValue": "festivos",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        440,
+        0
+      ],
+      "name": "Switch",
+      "id": "73cd0dac-2758-4dc9-abb9-0c3e48cabb42"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "dtbbQIvDyrjU5Ovm",
+          "mode": "list",
+          "cachedResultName": "Sub-flujo: Obtener Actividad",
+          "cachedResultUrl": "/workflow/dtbbQIvDyrjU5Ovm"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        -100
+      ],
+      "name": "Call 'Sub-flujo: Obtener Actividad'",
+      "id": "1b4860a5-f0f4-4c56-bcfe-cfb249b86efb"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "BOqoVsuuR76tr6Jn",
+          "mode": "list",
+          "cachedResultName": "Sub-flujo: Obtener Festivos",
+          "cachedResultUrl": "/workflow/BOqoVsuuR76tr6Jn"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        680,
+        100
+      ],
+      "name": "Call 'Sub-flujo: Obtener Festivos'",
+      "id": "0b3afb1d-1bbd-4fdb-a863-b254474eae88"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        920,
+        0
+      ],
+      "name": "Merge",
+      "id": "a62c98a3-846d-4b0d-8d75-cb7ea80294de"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "88d4b4d4-49dc-409f-b348-ea590c22069b",
+              "name": "tarea",
+              "value": "={{ $('Definir tarea').first().json.tarea }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1140,
+        0
+      ],
+      "name": "Verificar salida",
+      "id": "a47ba4a3-8b56-4899-b784-6fe7c9aebbd4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Definir tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Definir tarea": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Call 'Sub-flujo: Obtener Actividad'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Call 'Sub-flujo: Obtener Festivos'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Sub-flujo: Obtener Actividad'": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Sub-flujo: Obtener Festivos'": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Verificar salida",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "LJQhBFxk7F0jSUxK"
+  },
+  "versionId": "1ffbf129-cecd-4895-b63b-809289438428",
+  "meta": {},
+  "id": "BI5OqMv8TmgAiRpw",
+  "tags": []
+}

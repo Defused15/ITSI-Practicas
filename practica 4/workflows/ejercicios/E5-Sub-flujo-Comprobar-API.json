@@ -1,0 +1,96 @@
+{
+  "name": "Sub-flujo: Comprobar API",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "url"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "name": "When Executed by Another Workflow",
+      "id": "bff7fb14-9f7d-466f-83a8-26dd244d7dda"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "name": "HTTP Request",
+      "id": "af9eda82-5f8a-427a-85fa-6599044b7a3e"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "b1377b1b-9fda-4db6-a527-e393a8379f98",
+              "name": "estado",
+              "value": "OK",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        440,
+        0
+      ],
+      "name": "Edit Fields",
+      "id": "d52a5ecf-eea8-4798-af64-965fcdee33d2",
+      "executeOnce": true
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "3a061dfa-9513-41ce-8069-8b81afb3e426",
+  "meta": {},
+  "id": "Zc4uwWOxvFVTqnia",
+  "tags": []
+}
