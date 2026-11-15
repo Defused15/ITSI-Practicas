@@ -1,0 +1,67 @@
+{
+  "name": "Productor de Tareas",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "productor-tareas",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "a6d53fe9-45c1-4768-99ff-6472fb150aa7",
+      "name": "Webhook",
+      "webhookId": "e4b29a04-58d3-46ce-b4f3-a9ec891b907e"
+    },
+    {
+      "parameters": {
+        "queue": "task_created",
+        "sendInputData": false,
+        "message": "={{ JSON.stringify($json.body) }}",
+        "options": {
+          "assertQueue": false
+        }
+      },
+      "type": "n8n-nodes-base.rabbitmq",
+      "typeVersion": 1.1,
+      "position": [
+        240,
+        0
+      ],
+      "id": "1dc28820-18d7-45b0-acf0-bdb4566d19aa",
+      "name": "Enviar a task_created",
+      "credentials": {
+        "rabbitmq": {
+          "id": "u8rj3fuE2WiREUYM",
+          "name": "RabbitMQ (Tasks)"
+        }
+      }
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Enviar a task_created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "827c82cb-87f5-494c-87da-37733b3084e0",
+  "meta": null,
+  "id": "CSEcIduq3PMgklvf",
+  "tags": []
+}

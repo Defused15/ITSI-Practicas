@@ -1,0 +1,58 @@
+{
+  "name": "P6 Ejercicio 2 - Completar tarea",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "completar-tarea",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f0acf253-23d2-4620-b096-cfc08e1b86ae",
+      "name": "Webhook",
+      "webhookId": "f0545943-77a9-49c4-a2b1-bacfe051f0fd"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=http://localhost:5001/tasks/{{ $json.body.id }}/complete",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        0
+      ],
+      "id": "e83798ef-7589-4318-b251-66f26016229f",
+      "name": "Completar en la API"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Completar en la API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "32b00f0e-9884-45f4-9ac5-d11153e076dd",
+  "meta": null,
+  "id": "khjmiOKa5RrocNm2",
+  "tags": []
+}

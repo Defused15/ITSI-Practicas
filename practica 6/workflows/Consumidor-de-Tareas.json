@@ -1,0 +1,75 @@
+{
+  "name": "Consumidor de Tareas",
+  "nodes": [
+    {
+      "parameters": {
+        "queue": "task_created",
+        "options": {
+          "assertQueue": false,
+          "jsonParseBody": true,
+          "onlyContent": true
+        }
+      },
+      "type": "n8n-nodes-base.rabbitmqTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9778c6d9-4e4a-42a9-af7c-eb45b6fd0a01",
+      "name": "RabbitMQ Trigger",
+      "credentials": {
+        "rabbitmq": {
+          "id": "u8rj3fuE2WiREUYM",
+          "name": "RabbitMQ (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fb4a57ae-adf1-48ec-b2be-8a75377eca78",
+              "name": "procesado_por",
+              "value": "n8n_consumidor",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {},
+        "includeOtherFields": true
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        0
+      ],
+      "id": "23db0425-558a-4e54-814a-9a42959e043a",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "RabbitMQ Trigger": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b06dd9c9-7b1f-4425-b3b9-dd3fa4c65235",
+  "meta": null,
+  "id": "jPwTLO19pUVsurCA",
+  "tags": []
+}

@@ -1,0 +1,78 @@
+{
+  "name": "P6 Ejercicio 2 - Notificador de tareas completadas",
+  "nodes": [
+    {
+      "parameters": {
+        "queue": "task_completed",
+        "options": {
+          "assertQueue": false,
+          "jsonParseBody": true,
+          "onlyContent": true
+        }
+      },
+      "type": "n8n-nodes-base.rabbitmqTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "51cbc227-d3dd-4e7e-883b-9bee61742f93",
+      "name": "RabbitMQ Trigger",
+      "credentials": {
+        "rabbitmq": {
+          "id": "u8rj3fuE2WiREUYM",
+          "name": "RabbitMQ (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "defused15@gmail.com",
+        "toEmail": "rct419@inlumine.ual.es",
+        "subject": "=Tarea completada: {{ $json.title }}",
+        "emailFormat": "text",
+        "text": "=Se ha completado una tarea en el gestor de tareas.\n\nID: {{ $json.id }}\nTítulo: {{ $json.title }}\nDescripción: {{ $json.description }}\nCompletada: {{ $json.done }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        0
+      ],
+      "id": "0c8a6024-2bef-4082-8c08-6c1608c6a7a5",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "WmBUsVTAsEl1huOn",
+          "name": "Gmail SMTP"
+        }
+      },
+      "webhookId": "dbb622f0-9655-49bf-8a66-734952b4691f"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "RabbitMQ Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "aa368667-2fc3-485b-93fe-25f97019da0b",
+  "meta": null,
+  "id": "7NbgP9tON3lWHAuf",
+  "tags": []
+}

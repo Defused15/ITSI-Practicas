@@ -1,0 +1,149 @@
+{
+  "name": "P6 Ejercicio 1 - Eliminar tarea",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "808a7735-55b9-4c32-801d-6dcf4817b70b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf515749-fcbb-4e25-88ba-f5d0f31a7d3e",
+              "name": "id_a_borrar",
+              "value": 14,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        220,
+        0
+      ],
+      "id": "6f5e7373-b308-44e3-9b85-6b68f16e41d1",
+      "name": "Tarea a borrar"
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "task",
+          "mode": "list",
+          "cachedResultName": "task"
+        },
+        "deleteCommand": "delete",
+        "where": {
+          "values": [
+            {
+              "column": "id",
+              "condition": "equal",
+              "value": "={{ $json.id_a_borrar }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        440,
+        0
+      ],
+      "id": "68185a36-3749-4902-ab31-af95a791526f",
+      "name": "Borrar tarea",
+      "credentials": {
+        "postgres": {
+          "id": "VjyuLFWMFLurYpF0",
+          "name": "PostgreSQL (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT count(*)::int AS existe FROM task WHERE id = $1",
+        "options": {
+          "queryReplacement": "={{ $('Tarea a borrar').item.json.id_a_borrar }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        660,
+        0
+      ],
+      "id": "099ff42f-60df-40ea-85c2-eca26358b251",
+      "name": "Comprobar borrado",
+      "credentials": {
+        "postgres": {
+          "id": "VjyuLFWMFLurYpF0",
+          "name": "PostgreSQL (Tasks)"
+        }
+      },
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Tarea a borrar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tarea a borrar": {
+      "main": [
+        [
+          {
+            "node": "Borrar tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Borrar tarea": {
+      "main": [
+        [
+          {
+            "node": "Comprobar borrado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c7f0983c-33ee-4c3b-a913-41129cb9bf73",
+  "meta": null,
+  "id": "b1ITcPzUhSYu37DK",
+  "tags": []
+}

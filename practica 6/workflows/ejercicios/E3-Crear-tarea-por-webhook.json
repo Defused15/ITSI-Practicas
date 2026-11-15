@@ -1,0 +1,199 @@
+{
+  "name": "P6 Ejercicio 3 - Crear tarea por webhook",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tasks-from-n8n",
+        "options": {},
+        "responseMode": "responseNode"
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "587f0e8c-175c-463d-9108-260d42804817",
+      "name": "Webhook",
+      "webhookId": "4a68d89c-aff0-4080-8647-a671587ea186"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "dcbfe38d-a437-436a-a511-49d948691371",
+              "leftValue": "={{ typeof $json.body.title === 'string' && $json.body.title.trim() !== '' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "ac9371df-5b64-4e3d-a911-aa3491943e8c",
+      "name": "Title válido"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO task (title, description, done) VALUES ($1, $2, false) RETURNING id, title, description, done",
+        "options": {
+          "queryReplacement": "={{ [$json.body.title.trim(), $json.body.description ?? ''] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        460,
+        -100
+      ],
+      "id": "1cd740a4-972c-4619-9311-437255259ea3",
+      "name": "Insertar tarea",
+      "credentials": {
+        "postgres": {
+          "id": "VjyuLFWMFLurYpF0",
+          "name": "PostgreSQL (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "queue": "task_created",
+        "sendInputData": false,
+        "message": "={{ JSON.stringify($json) }}",
+        "options": {
+          "assertQueue": false
+        }
+      },
+      "type": "n8n-nodes-base.rabbitmq",
+      "typeVersion": 1.1,
+      "position": [
+        680,
+        -100
+      ],
+      "id": "01f9b49e-8ad5-495d-a304-bf52e34175b6",
+      "name": "Publicar en task_created",
+      "credentials": {
+        "rabbitmq": {
+          "id": "u8rj3fuE2WiREUYM",
+          "name": "RabbitMQ (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ task: $('Insertar tarea').item.json }) }}",
+        "options": {
+          "responseCode": 201
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        900,
+        -100
+      ],
+      "id": "ad67b6ad-7a56-4a8e-a534-5f1b32a222cd",
+      "name": "Responder 201"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: \"A non-empty title is required\" }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        100
+      ],
+      "id": "3004075f-5217-49f8-9a1c-104f06735692",
+      "name": "Responder 400"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Title válido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Title válido": {
+      "main": [
+        [
+          {
+            "node": "Insertar tarea",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder 400",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insertar tarea": {
+      "main": [
+        [
+          {
+            "node": "Publicar en task_created",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar en task_created": {
+      "main": [
+        [
+          {
+            "node": "Responder 201",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0a7352dc-e7ea-4dfa-bf73-d96521e22d5a",
+  "meta": null,
+  "id": "nbkaVXPkIHosyf9Q",
+  "tags": []
+}
