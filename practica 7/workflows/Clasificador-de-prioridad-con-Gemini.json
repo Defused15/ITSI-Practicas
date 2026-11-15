@@ -1,0 +1,341 @@
+{
+  "name": "P7 Clasificador de prioridad con Gemini",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6543c7fa-6b11-49f5-9697-dea5dfdea785",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM task WHERE description IS NOT NULL AND description != '' ORDER BY id DESC LIMIT 5;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "7c6bdd89-d884-4861-b8ad-3348cb58117b",
+      "name": "Leer tareas",
+      "credentials": {
+        "postgres": {
+          "id": "VjyuLFWMFLurYpF0",
+          "name": "PostgreSQL (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Actúa como un jefe de proyecto con experiencia. Lee la descripción de la siguiente tarea y decide su prioridad.\n\nDescripción: \"{{ $json.description }}\"\n\nResponde ÚNICAMENTE con una de estas tres palabras: ALTA, MEDIA o BAJA."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "642c9368-e2a8-4d45-9a87-848ce880577f",
+      "name": "Clasificar prioridad",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VMnjGVM2LXP1FGJF",
+          "name": "Gemini Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "72912754-a07e-4669-9863-6334bbf6f2ef",
+              "name": "id",
+              "value": "={{ $('Leer tareas').item.json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "2712c0ad-6575-453c-ab9e-faa82d7de3ae",
+              "name": "title",
+              "value": "={{ $('Leer tareas').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "56e69091-4a74-49c0-87bc-fbca16ef7623",
+              "name": "description",
+              "value": "={{ $('Leer tareas').item.json.description }}",
+              "type": "string"
+            },
+            {
+              "id": "e21c3aef-abf8-4c3c-a6a4-b43a390b6735",
+              "name": "text",
+              "value": "={{ $json.content.parts[0].text.trim().toUpperCase() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        760,
+        0
+      ],
+      "id": "c5a546ca-75f2-48a0-948d-758b0263cc54",
+      "name": "Preparar tarea"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "641cc4f2-6ece-4c0e-9185-f24fc42f0582",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "ALTA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ALTA"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "60aabfe0-57c4-45bf-adbc-4643c6819a1b",
+                    "leftValue": "={{ $json.text }}",
+                    "rightValue": "MEDIA",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "MEDIA"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "BAJA"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        980,
+        0
+      ],
+      "id": "ce9093b6-c352-43f1-898b-a9e719c80f28",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "fromEmail": "defused15@gmail.com",
+        "toEmail": "rct419@inlumine.ual.es",
+        "subject": "¡Alerta de Tarea Prioridad ALTA!",
+        "emailFormat": "text",
+        "text": "=La tarea \"{{ $json.title }}\" (ID: {{ $json.id }}) ha sido clasificada como ALTA prioridad por la IA.",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1240,
+        -200
+      ],
+      "id": "43eab4cf-0cf2-45ac-97dc-f79645337da6",
+      "name": "Send Email",
+      "credentials": {
+        "smtp": {
+          "id": "WmBUsVTAsEl1huOn",
+          "name": "Gmail SMTP"
+        }
+      },
+      "webhookId": "fce79cc9-2d01-4c92-8e00-7fa7b1253c47"
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1240,
+        60
+      ],
+      "id": "5df92f3d-e021-4a48-8cad-97e2bc1dd78a",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE task SET prioridad = $1 WHERE id = $2 RETURNING id, title, prioridad;",
+        "options": {
+          "queryReplacement": "={{ [$json.text, $json.id] }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1480,
+        60
+      ],
+      "id": "39a38092-ab9a-4a42-a735-5b45c884e680",
+      "name": "Guardar prioridad",
+      "credentials": {
+        "postgres": {
+          "id": "VjyuLFWMFLurYpF0",
+          "name": "PostgreSQL (Tasks)"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Leer tareas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer tareas": {
+      "main": [
+        [
+          {
+            "node": "Clasificar prioridad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Clasificar prioridad": {
+      "main": [
+        [
+          {
+            "node": "Preparar tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar tarea": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ],
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Guardar prioridad",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9425a35d-4cbd-4c86-966b-c7cf9c4bab5c",
+  "meta": null,
+  "id": "qrhRlfXFs6vfpCZM",
+  "tags": []
+}

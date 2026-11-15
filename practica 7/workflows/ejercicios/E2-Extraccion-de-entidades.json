@@ -1,0 +1,230 @@
+{
+  "name": "P7 Ejercicio 2 - Extracción de entidades",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "extraer-entidades",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "68af76dd-c012-4656-b258-997de4c8c74d",
+      "name": "Webhook",
+      "webhookId": "4f7b1609-1cb9-461a-8a92-0172cb5483de"
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Extrae del siguiente texto el email del cliente, el tipo de problema y el ID de la incidencia.\nResponde ÚNICAMENTE con un JSON válido con las claves \"email_cliente\", \"tipo_problema\" (por ejemplo \"error\" o \"consulta\") e \"id_incidencia\". Si no encuentras algún valor, usa \"null\".\n\nTexto: \"{{ $json.body.texto }}\""
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.1
+        },
+        "jsonOutput": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "2c2172c6-e8ea-4311-a129-8b159001b3ee",
+      "name": "Extraer entidades",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VMnjGVM2LXP1FGJF",
+          "name": "Gemini Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e5db0777-1ef2-431a-bd27-36fd27eca372",
+              "name": "email",
+              "value": "={{ JSON.parse($json.content.parts[0].text).email_cliente }}",
+              "type": "string"
+            },
+            {
+              "id": "1e9c0af9-2573-41a9-967d-32b9be8c31ed",
+              "name": "incidencia",
+              "value": "={{ JSON.parse($json.content.parts[0].text).id_incidencia }}",
+              "type": "string"
+            },
+            {
+              "id": "a28d9499-0f88-4d8d-b811-6325045b0dd8",
+              "name": "tipo_problema",
+              "value": "={{ JSON.parse($json.content.parts[0].text).tipo_problema }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        540,
+        0
+      ],
+      "id": "7e318e7a-ab8b-4f8b-bdb9-3e4146deef1b",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "00281e4f-c2bd-4828-b902-c8b26bc8ff63",
+                    "leftValue": "={{ $json.email }}",
+                    "rightValue": "@ual.es",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "UAL"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Externo"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        760,
+        0
+      ],
+      "id": "7f9a6188-c7a8-495e-bd30-36f90cf09e99",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ...$json, origen: 'UAL', cola: 'soporte-interno' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        -100
+      ],
+      "id": "53d20c4b-4d15-4efc-8de7-257635165ae9",
+      "name": "Responder cliente UAL"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ ...$json, origen: 'Externo', cola: 'soporte-general' }) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1000,
+        100
+      ],
+      "id": "1dcd7f43-61af-4ee0-9dfb-778d9c8e21fa",
+      "name": "Responder cliente externo"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Extraer entidades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extraer entidades": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Responder cliente UAL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Responder cliente externo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a32cb2d5-a48e-45be-9de7-fb78e4ddc0a0",
+  "meta": null,
+  "id": "SuOV6URSCDGC6gjm",
+  "tags": []
+}

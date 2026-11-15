@@ -1,0 +1,152 @@
+{
+  "name": "P7 Ejercicio 1 - Generador de resúmenes",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "8a0a99a6-f49b-4f0e-a358-23a4ce4d65fd",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * FROM task WHERE description IS NOT NULL AND description != '' ORDER BY id DESC LIMIT 5;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        220,
+        0
+      ],
+      "id": "3e4ec58a-b327-476a-a546-751de47275d4",
+      "name": "Leer tareas",
+      "credentials": {
+        "postgres": {
+          "id": "VjyuLFWMFLurYpF0",
+          "name": "PostgreSQL (Tasks)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "text",
+        "operation": "message",
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3.5-flash-lite",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3.5-flash-lite"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Genera un resumen conciso de una sola frase (máximo 15 palabras) para la siguiente tarea: \"{{ $json.description }}\"\n\nResponde solo con el resumen."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "a8c4956e-fa61-4480-9427-6fc8fdb1c5a4",
+      "name": "Resumir tarea",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "VMnjGVM2LXP1FGJF",
+          "name": "Gemini Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7dcfb01f-ee6c-4514-b8f2-a160e4d06742",
+              "name": "id",
+              "value": "={{ $('Leer tareas').item.json.id }}",
+              "type": "number"
+            },
+            {
+              "id": "260ba413-2073-44b9-8a34-2ff44427a5c3",
+              "name": "title",
+              "value": "={{ $('Leer tareas').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "e4ba2398-59c4-4914-9ac2-2ca72bcf0fd7",
+              "name": "resumen",
+              "value": "={{ $json.content.parts[0].text.trim() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        760,
+        0
+      ],
+      "id": "de7e528a-3848-4684-951d-baa49169be5f",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Leer tareas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Leer tareas": {
+      "main": [
+        [
+          {
+            "node": "Resumir tarea",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Resumir tarea": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e19a766d-9936-4bda-bc02-44f62cbefb66",
+  "meta": null,
+  "id": "JRZRobtW93ECVmAo",
+  "tags": []
+}

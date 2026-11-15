@@ -11,3 +11,4 @@
 | 4 | Robustez y modularidad - Manejo de errores y sub-flujos de trabajo | [`practica 4`](practica%204/) |
 | 5 | Orquestación de microservicios con Docker Compose, PostgreSQL y RabbitMQ | [`practica 5`](practica%205/) |
 | 6 | Orquestación de microservicios con n8n, PostgreSQL y RabbitMQ | [`practica 6`](practica%206/) |
+| 7 | Orquestación de modelos de IA - Integración con Gemini | [`practica 7`](practica%207/) |
