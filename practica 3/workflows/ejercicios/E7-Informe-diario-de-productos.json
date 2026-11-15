@@ -6,7 +6,8 @@
         "rule": {
           "interval": [
             {
-              "triggerAtHour": 8
+              "field": "days",
+              "triggerAtHour": 14
             }
           ]
         }
@@ -404,9 +405,10 @@
   },
   "active": false,
   "settings": {
-    "executionOrder": "v1"
+    "executionOrder": "v1",
+    "timezone": "Europe/Madrid"
   },
-  "versionId": "09c606ec-dfbf-4b24-8fe1-2d4cec5b9a84",
+  "versionId": "b550f4fb-d123-4d68-a0af-29936c7e16c2",
   "meta": null,
   "id": "fJjbqbweSIcoMfOd",
   "tags": []

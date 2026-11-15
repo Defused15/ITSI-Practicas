@@ -342,7 +342,7 @@ Se creó el documento `Informe Diario de Productos` con la hoja `Informe_Diario`
 
 | # | Nodo | Configuración |
 |---|---|---|
-| 1 | Schedule Trigger | Una vez al día, a las 8:00 (**Trigger Interval** = `Days`, **Trigger at Hour** = `8am`) |
+| 1 | Schedule Trigger | Una vez al día, a las 14:00 (**Trigger Interval** = `Days`, **Trigger at Hour** = `2pm`, **Trigger at Minute** = `0`) |
 | 2 | HTTP Request | `GET https://fakestoreapi.com/products` |
 | 3 | Switch | Reglas sobre `{{ $json.price }}` |
 | 4 | Categoria Económico / Medio / Premium | Edit Fields con **Include Other Input Fields**: `categoria` = `Económico`, `Medio` o `Premium` |
@@ -357,15 +357,25 @@ Se creó el documento `Informe Diario de Productos` con la hoja `Informe_Diario`
 
 Columnas: `ID` = `{{ $json.id }}`, `Título` = `{{ $json.title }}`, `Precio` = `{{ $json.price }}`, `Categoría` = `{{ $json.categoria }}` y `Fecha del Informe` = `{{ $now }}`.
 
-Se ejecutó con **Execute workflow**: de los 20 productos, 9 son económicos, 8 de precio medio y 3 premium, y las 20 filas se escribieron en `Informe_Diario` agrupadas por categoría, en el orden en que el Merge une las tres ramas.
+**Hora de ejecución.** El enunciado propone las 8:00, pero se programó a las 14:00. Lo que pide el ejercicio es que el informe se genere solo, una vez al día, sin intervención manual; la hora concreta no cambia el flujo ni el resultado, porque la Fake Store API devuelve siempre los mismos 20 productos y el workflow los clasifica igual a las 8:00 que a las 14:00. Programarlo a las 14:00 permitió comprobar la ejecución automática el mismo día, en horario de trabajo, sin esperar a la mañana siguiente. Como la instancia de n8n usa por defecto la zona horaria `America/New_York`, en **Settings** del workflow se fijó **Timezone** = `Europe/Madrid` para que las 14:00 sean hora de España.
 
-![Ejecución del ejercicio 7](docs/img/e7-01-ejecucion.png)
+![Schedule Trigger a las 14:00](docs/img/e7-07-schedule-14h.png)
+
+Primero se probó con **Execute workflow**: de los 20 productos, 9 son económicos, 8 de precio medio y 3 premium, y las 20 filas se escribieron en `Informe_Diario` agrupadas por categoría, en el orden en que el Merge une las tres ramas.
+
+![Ejecución manual de prueba](docs/img/e7-01-ejecucion.png)
+
+Después se publicó el workflow con **Publish** y a las 14:00 se lanzó solo. En la lista de ejecuciones aparece a las 14:00:16, sin haber pulsado nada, con el mismo reparto de 9, 8 y 3 productos.
+
+![Ejecución automática a las 14:00](docs/img/e7-06-ejecucion-automatica.png)
 
 ![Salidas del Switch](docs/img/e7-02-switch.png)
 
 ![Merge de las tres categorías](docs/img/e7-03-merge.png)
 
 ![Nodo de Google Sheets](docs/img/e7-04-google-sheets.png)
+
+En la hoja, las filas 2 a 21 corresponden a la prueba manual (todavía con la hora de Nueva York, `-05:00`) y las filas 22 a 41 a la ejecución automática, con `Fecha del Informe` a las `14:00` y la zona `+01:00`.
 
 ![Hoja Informe_Diario](docs/img/e7-05-hoja-informe.png)
 
