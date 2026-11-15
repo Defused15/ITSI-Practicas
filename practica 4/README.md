@@ -85,11 +85,11 @@ La asignación que se activa en esta prueba es la del sub-flujo. n8n no lanza el
 
 Cada ejecución termina con error en los workflows principal y sub-flujo, porque la tercera URL no existe. Ese es el resultado esperado de la prueba.
 
-| Ejecución | Workflow | Modo | Estado |
-|---|---|---|---|
-| 62 | `Procesador Principal de imagenes` | `manual` | Error |
-| 63 | `Sub-flujo: Descargador de imagenes` | `integrated` | Error |
-| 64 | `Manejador de Errores` | `error` | Correcto |
+| Workflow | Modo | Estado |
+|---|---|---|
+| `Procesador Principal de imagenes` | `manual` | Error |
+| `Sub-flujo: Descargador de imagenes` | `integrated` | Error |
+| `Manejador de Errores` | `error` | Correcto |
 
 ### Procesador principal
 
@@ -200,7 +200,7 @@ Las expresiones leen de `$('Error Trigger')` porque, después del nodo de Google
 
 En la captura ya aparece la llamada al `Sub-flujo: Notificador`, que se añadió después en el ejercicio 4.4.
 
-**Prueba.** Se ejecutó `Procesador Principal de imagenes` (ejecución #167) con la URL incorrecta. El fallo del sub-flujo de descarga (#168) activó el manejador (#170), y el nodo Send Email terminó correctamente: Gmail aceptó el mensaje para los dos destinatarios (`accepted`).
+**Prueba.** Se ejecutó `Procesador Principal de imagenes` con la URL incorrecta. El fallo del sub-flujo de descarga activó el manejador, y el nodo Send Email terminó correctamente: Gmail aceptó el mensaje para los dos destinatarios (`accepted`).
 
 ![Ejecución del manejador con el envío del correo](docs/img/e1-02-ejecucion-manejador.png)
 
@@ -242,11 +242,11 @@ En la versión de n8n utilizada, el nodo Edit Fields no tiene un tipo `Remove` e
 
 **Resultado.**
 
-| Ejecución | Workflow | Modo | Estado |
-|---|---|---|---|
-| 66 | `Ejercicio 2 - Validar producto` | `manual` | Error |
-| 67 | `Sub-flujo: Validador de Productos` | `integrated` | Error en `Stop and Error` |
-| 68 | `Manejador de Errores` | `error` | Correcto |
+| Workflow | Modo | Estado |
+|---|---|---|
+| `Ejercicio 2 - Validar producto` | `manual` | Error |
+| `Sub-flujo: Validador de Productos` | `integrated` | Error en `Stop and Error` |
+| `Manejador de Errores` | `error` | Correcto |
 
 ![Ejecución del workflow principal](docs/img/e2-03-ejecucion-principal.png)
 
@@ -289,10 +289,10 @@ Como en la práctica guiada, el manejador se activa por el Error Workflow del su
 
 **Resultado.**
 
-| Ejecución | `tarea` | Sub-flujo llamado | Ítems en la salida final |
-|---|---|---|---|
-| 69 | `actividad` | `Obtener Actividad` | 1 (`Learn a new programming language`) |
-| 71 | `festivos` | `Obtener Festivos` | 32 |
+| `tarea` | Sub-flujo llamado | Ítems en la salida final |
+|---|---|---|
+| `actividad` | `Obtener Actividad` | 1 (`Learn a new programming language`) |
+| `festivos` | `Obtener Festivos` | 32 |
 
 ![Ejecución con tarea = actividad](docs/img/e3-04-ejecucion-actividad.png)
 
@@ -302,7 +302,7 @@ Como en la práctica guiada, el manejador se activa por el Error Workflow del su
 
 ![Salida final con tarea = festivos](docs/img/e3-07-salida-festivos.png)
 
-**Pregunta de reflexión.** En la versión de n8n utilizada, el sub-flujo de festivos no devuelve un único ítem con un array: el nodo HTTP Request separa automáticamente el array de la respuesta en 32 ítems, de modo que la salida final ya contiene un ítem por festivo (ejecución #71). Si la API devolviera el array dentro de un campo (por ejemplo, `{ "festivos": [...] }`), habría que añadir un **Split Out** sobre ese campo al final del sub-flujo para que devolviera un ítem por festivo.
+**Pregunta de reflexión.** En la versión de n8n utilizada, el sub-flujo de festivos no devuelve un único ítem con un array: el nodo HTTP Request separa automáticamente el array de la respuesta en 32 ítems, de modo que la salida final ya contiene un ítem por festivo. Si la API devolviera el array dentro de un campo (por ejemplo, `{ "festivos": [...] }`), habría que añadir un **Split Out** sobre ese campo al final del sub-flujo para que devolviera un ítem por festivo.
 
 ### 5.4. Ejercicio 4: Sub-flujo notificador reutilizable
 
@@ -334,12 +334,12 @@ mensaje = {{ "Fallo en " + $('Error Trigger').item.json.workflow.name + ": " + $
 
 **Resultado.** Una sola ejecución del `Procesador Principal` generó los dos eventos:
 
-| Ejecución | Workflow | Resultado |
-|---|---|---|
-| 73 | `Procesador Principal de imagenes` | Correcto; llama al Notificador con `INFO` |
-| 75 | `Sub-flujo: Notificador` | Escribe en `Eventos` |
-| 76 | `Manejador de Errores` | Registra el fallo del descargador y llama al Notificador con `ERROR` |
-| 77 | `Sub-flujo: Notificador` | Escribe en `Alertas` |
+| Workflow | Resultado |
+|---|---|
+| `Procesador Principal de imagenes` | Correcto; llama al Notificador con `INFO` |
+| `Sub-flujo: Notificador` | Escribe en `Eventos` |
+| `Manejador de Errores` | Registra el fallo del descargador y llama al Notificador con `ERROR` |
+| `Sub-flujo: Notificador` | Escribe en `Alertas` |
 
 ![Ejecución del Procesador Principal](docs/img/e4-04-ejecucion-procesador.png)
 
@@ -403,14 +403,14 @@ El workflow tiene `Manejador de Errores` como Error Workflow y está publicado p
 
 ![On Error: Continue en la pestaña Settings](docs/img/e5-05-call-settings.png)
 
-**Resultado.** La ejecución programada de las 10:00 (#102) comprobó las tres APIs, que respondieron correctamente:
+**Resultado.** La ejecución programada de las 10:00 comprobó las tres APIs, que respondieron correctamente:
 
-| Ejecución | Workflow | Resultado |
-|---|---|---|
-| 102 | `Ejercicio 5 - Monitor de salud de APIs` (`trigger`) | 3 ítems por la rama `true` |
-| 103 | `Sub-flujo: Comprobar API` | Fake Store API: `estado = OK` |
-| 104 | `Sub-flujo: Comprobar API` | JokeAPI: `estado = OK` |
-| 105 | `Sub-flujo: Comprobar API` | Nager.Date: 32 ítems → un único `estado = OK` |
+| Workflow | Resultado |
+|---|---|
+| `Ejercicio 5 - Monitor de salud de APIs` (`trigger`) | 3 ítems por la rama `true` |
+| `Sub-flujo: Comprobar API` | Fake Store API: `estado = OK` |
+| `Sub-flujo: Comprobar API` | JokeAPI: `estado = OK` |
+| `Sub-flujo: Comprobar API` | Nager.Date: 32 ítems → un único `estado = OK` |
 
 ![Ejecución programada del monitor](docs/img/e5-03-ejecucion-monitor.png)
 
@@ -422,11 +422,11 @@ Se escribió una fila por API en `Salud_OK`; `Salud_Fallo` quedó vacía porque 
 
 ![Hoja Salud_Fallo](docs/img/e5-08-hoja-salud-fallo.png)
 
-**Prueba con una API caída.** Para comprobar la rama `false` se hizo una ejecución manual (#162) añadiendo temporalmente en el nodo Edit Fields una cuarta URL con un dominio que no existe, `https://api-inexistente.invalid/status`. El cambio no se publicó, así que las ejecuciones programadas siguieron usando la lista original, y después se eliminó.
+**Prueba con una API caída.** Para comprobar la rama `false` se hizo una ejecución manual añadiendo temporalmente en el nodo Edit Fields una cuarta URL con un dominio que no existe, `https://api-inexistente.invalid/status`. El cambio no se publicó, así que las ejecuciones programadas siguieron usando la lista original, y después se eliminó.
 
 ![Lista de APIs con la URL de prueba](docs/img/e5-09-url-rota.png)
 
-El sub-flujo falló para la URL de prueba (#166), pero con **On Error: Continue** el nodo Execute Workflow devolvió un ítem con el campo `error` y el monitor siguió con las demás: 3 ítems por la rama `true` y 1 por la rama `false`.
+El sub-flujo falló para la URL de prueba, pero con **On Error: Continue** el nodo Execute Workflow devolvió un ítem con el campo `error` y el monitor siguió con las demás: 3 ítems por la rama `true` y 1 por la rama `false`.
 
 ![Salida del nodo Execute Workflow con un error](docs/img/e5-11-salida-call-fallo.png)
 

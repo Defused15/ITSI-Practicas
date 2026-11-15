@@ -139,7 +139,7 @@ Columnas del nodo de Google Sheets:
 | `Fecha de Procesamiento` | `{{ $now }}` |
 | `categoria_original` | `{{ $json.categoria_original }}` |
 
-En la ejecución #183, el Switch repartió los 10 chistes en 6 de `Programming`, 3 de `Misc` y 1 de `Dark`, y las 10 filas se escribieron en la hoja `Todos`.
+En la ejecución, el Switch repartió los 10 chistes en 6 de `Programming`, 3 de `Misc` y 1 de `Dark`, y las 10 filas se escribieron en la hoja `Todos`.
 
 ![Ejecución del ejercicio 1](docs/img/e1-01-ejecucion.png)
 
@@ -170,7 +170,7 @@ Se creó el documento `Análisis de Valoraciones` con las hojas `Top`, `Bueno` y
 
 Columnas: `ID` = `{{ $json.id }}`, `Título` = `{{ $json.title }}`, `Precio` = `{{ $json.price }}` y `Valoración` = `{{ $json.rating.rate }}`.
 
-La Fake Store API devuelve directamente un array, y el HTTP Request de n8n lo separa en un ítem por producto, así que no fue necesario un Split Out. En la ejecución #184, de los 20 productos, 6 fueron a `Top`, 5 a `Bueno` y 9 a `Regular`.
+La Fake Store API devuelve directamente un array, y el HTTP Request de n8n lo separa en un ítem por producto, así que no fue necesario un Split Out. En la ejecución, de los 20 productos, 6 fueron a `Top`, 5 a `Bueno` y 9 a `Regular`.
 
 ![Ejecución del ejercicio 2](docs/img/e2-01-ejecucion.png)
 
@@ -211,7 +211,7 @@ type     = {{ ['Técnico', 'Marketing', 'Administrativo'][Math.floor(Math.random
 
 Cada nodo `Tareas_…` escribe `Actividad` = `{{ $json.activity }}`, `Prioridad` = `{{ $json.priority }}` y `Tipo` = `{{ $json.type }}`. Como su salida es la fila escrita, el registro final lee esas columnas: `activity` = `{{ $json.Actividad }}`, `priority` = `{{ $json.Prioridad }}`, `type` = `{{ $json.Tipo }}` y `hora_asignacion` = `{{ $now }}`.
 
-En la ejecución #185, las 5 actividades se repartieron en 2 de prioridad `Alta`, 2 de `Media` y 1 de `Baja`, cada una se escribió en la hoja de su combinación y las 5 quedaron en `Registro_General`.
+En la ejecución, las 5 actividades se repartieron en 2 de prioridad `Alta`, 2 de `Media` y 1 de `Baja`, cada una se escribió en la hoja de su combinación y las 5 quedaron en `Registro_General`.
 
 ![Ejecución del ejercicio 3](docs/img/e3-01-ejecucion.png)
 
@@ -242,7 +242,7 @@ Columnas: `Nombre` = `{{ $json.name }}`, `Lenguaje` = `{{ $json.language ?? 'Sin
 
 Algunos repositorios tienen `language` a `null`. Para que el Switch no falle al comparar `null` con un texto con la validación de tipos estricta, se activó **Convert types where required**. En la columna `Lenguaje`, el operador `??` escribe `Sin lenguaje` cuando el valor es `null`.
 
-En la ejecución #191 se obtuvieron 30 repositorios de la organización `google`: 9 de JavaScript, 4 de Python, 4 de C++ y 13 de otros lenguajes.
+En la ejecución se obtuvieron 30 repositorios de la organización `google`: 9 de JavaScript, 4 de Python, 4 de C++ y 13 de otros lenguajes.
 
 ![Ejecución del ejercicio 4](docs/img/e4-01-ejecucion.png)
 
@@ -293,7 +293,7 @@ return [{ json: { dias } }];
 
 Columnas: `Fecha` = `{{ $json.fecha }}`, `Código WMO` = `{{ $json.codigo }}`, `Temperatura Máx (°C)` = `{{ $json.temp_max }}` y `Categoría` con el nombre fijo de cada hoja.
 
-En la ejecución #192, de los 5 días de previsión, 2 fueron nublados (código 3) y 3 de lluvia (códigos 61 y 63); no hubo días despejados ni de otro tipo.
+En la ejecución, de los 5 días de previsión, 2 fueron nublados (código 3) y 3 de lluvia (códigos 61 y 63); no hubo días despejados ni de otro tipo.
 
 ![Ejecución del ejercicio 5](docs/img/e5-01-ejecucion.png)
 
@@ -324,7 +324,7 @@ Se creó el documento `Plan del Día` con la hoja `Planes` y las cabeceras `Chis
 | 7 | Crear plan | Edit Fields con **Include Other Input Fields**: `plan` = `Chiste: {{ $json.joke }} \| Actividad: {{ $json.activity }}` |
 | 8 | Append row in Planes | Google Sheets: `Chiste`, `Actividad` y `Plan` |
 
-Igual que en el ejercicio 3, la Bored API devuelve las 196 actividades, y el HTTP Request ya las separa en ítems; por eso, en lugar de un Split Out, en esa rama se usó un Limit de 5. En la ejecución #188 el Merge emparejó los 5 chistes con las 5 primeras actividades y se escribieron 5 planes.
+Igual que en el ejercicio 3, la Bored API devuelve las 196 actividades, y el HTTP Request ya las separa en ítems; por eso, en lugar de un Split Out, en esa rama se usó un Limit de 5. En la ejecución el Merge emparejó los 5 chistes con las 5 primeras actividades y se escribieron 5 planes.
 
 ![Ejecución del ejercicio 6](docs/img/e6-01-ejecucion.png)
 
@@ -357,7 +357,7 @@ Se creó el documento `Informe Diario de Productos` con la hoja `Informe_Diario`
 
 Columnas: `ID` = `{{ $json.id }}`, `Título` = `{{ $json.title }}`, `Precio` = `{{ $json.price }}`, `Categoría` = `{{ $json.categoria }}` y `Fecha del Informe` = `{{ $now }}`.
 
-Se ejecutó con **Execute workflow** (ejecución #189): de los 20 productos, 9 son económicos, 8 de precio medio y 3 premium, y las 20 filas se escribieron en `Informe_Diario` agrupadas por categoría, en el orden en que el Merge une las tres ramas.
+Se ejecutó con **Execute workflow**: de los 20 productos, 9 son económicos, 8 de precio medio y 3 premium, y las 20 filas se escribieron en `Informe_Diario` agrupadas por categoría, en el orden en que el Merge une las tres ramas.
 
 ![Ejecución del ejercicio 7](docs/img/e7-01-ejecucion.png)
 

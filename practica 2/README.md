@@ -95,7 +95,7 @@ Parte del workflow guiado. JokeAPI admite varias categorías separadas por comas
 | 5 | Programming | Rama `true`: `categoria` = `Programming`, `chiste` = `{{ $json.jokes.joke }}` |
 | 6 | Misc | Rama `false`: `categoria` = `Misc`, `chiste` = `{{ $json.jokes.joke }}` |
 
-En la ejecución #177, de los 5 chistes, 4 fueron de `Programming` y 1 de `Misc`.
+En la ejecución, de los 5 chistes, 4 fueron de `Programming` y 1 de `Misc`.
 
 ![Workflow del ejercicio 1](docs/img/e1-01-workflow.png)
 
@@ -117,7 +117,7 @@ En la ejecución #177, de los 5 chistes, 4 fueron de `Programming` y 1 de `Misc`
 
 La Fake Store API devuelve directamente un array, y el nodo HTTP Request de n8n separa los arrays de la respuesta en un ítem por elemento. Por eso no hace falta un Split Out: el If ya recibe los 20 productos por separado. Además de `etiqueta`, los Edit Fields guardan el nombre y el precio del producto para que la salida sea legible.
 
-En la ejecución #178, 8 productos superaron los 100 € y 12 quedaron por debajo.
+En la ejecución, 8 productos superaron los 100 € y 12 quedaron por debajo.
 
 ![Workflow del ejercicio 2](docs/img/e2-01-workflow.png)
 
@@ -147,7 +147,7 @@ date     = {{ $('Es nacional').item.json.date }}
 activity = {{ $json.activity }}
 ```
 
-En la ejecución #179 se obtuvieron 32 festivos; 10 son nacionales y recibieron una actividad, y los otros 22 son autonómicos.
+En la ejecución se obtuvieron 32 festivos; 10 son nacionales y recibieron una actividad, y los otros 22 son autonómicos.
 
 ![Workflow del ejercicio 3](docs/img/e3-01-workflow.png)
 
@@ -165,7 +165,7 @@ En la ejecución #179 se obtuvieron 32 festivos; 10 son nacionales y recibieron 
 | 4 | Alerta | Rama `true`: `estado` = `Alerta: calor extremo` y `temperatura` |
 | 5 | Normal | Rama `false`: `estado` = `Temperatura normal` y `temperatura` |
 
-En la ejecución #180 la temperatura en Madrid era de 13 °C, así que el ítem fue a la rama `false`.
+En la ejecución la temperatura en Madrid era de 13 °C, así que el ítem fue a la rama `false`.
 
 ![Workflow del ejercicio 4](docs/img/e4-01-workflow.png)
 
@@ -188,7 +188,7 @@ En la ejecución #180 la temperatura en Madrid era de 13 °C, así que el ítem 
 
 El enunciado indica la expresión `{{ $json.result.dob.age }}`, pero con **Include** = `No Other Fields` el Split Out deja los campos de cada usuario en el primer nivel del ítem, así que la expresión correcta es `{{ $json.dob.age }}`.
 
-En la ejecución #181, 4 de los 10 usuarios tenían más de 50 años y 6 tenían 50 o menos.
+En la ejecución, 4 de los 10 usuarios tenían más de 50 años y 6 tenían 50 o menos.
 
 ![Workflow del ejercicio 5](docs/img/e5-01-workflow.png)
 
