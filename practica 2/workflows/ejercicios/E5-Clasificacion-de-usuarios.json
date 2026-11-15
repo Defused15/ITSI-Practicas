@@ -1,0 +1,209 @@
+{
+  "name": "P2 Ejercicio 5 - Clasificacion de usuarios",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2491cfbc-a977-4820-bc48-9e2215d6fb56",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://randomuser.me/api/?results=10",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "1972bed2-9c0c-4f2b-bdcb-550a973fc732",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "results",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "2af88cde-6921-4658-b3aa-2b533569ad1f",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8a9163b2-b8ad-44ff-bf27-696617df5f0e",
+              "leftValue": "={{ $json.dob.age }}",
+              "rightValue": 50,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "e70c9ea1-bbfa-494c-bee0-730923f9c5b6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "56f21e55-1a8d-462e-849c-d1a9450422fa",
+              "name": "grupo",
+              "value": "Mayor de 50",
+              "type": "string"
+            },
+            {
+              "id": "d10ee772-917d-402b-9d80-400a8200f63d",
+              "name": "nombre",
+              "value": "={{ $json.name.first }} {{ $json.name.last }}",
+              "type": "string"
+            },
+            {
+              "id": "43d3082a-f2a4-4fae-8056-4872292a408f",
+              "name": "edad",
+              "value": "={{ $json.dob.age }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -100
+      ],
+      "id": "a583d0f9-32a5-4d72-a346-35d316164508",
+      "name": "Mayor de 50"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c5bfd005-fea5-4fa8-9c49-0de46ee968bf",
+              "name": "grupo",
+              "value": "Menor o igual de 50",
+              "type": "string"
+            },
+            {
+              "id": "c9748d47-f42b-472c-a1d6-23601c10e4c3",
+              "name": "nombre",
+              "value": "={{ $json.name.first }} {{ $json.name.last }}",
+              "type": "string"
+            },
+            {
+              "id": "1714c094-569c-41c8-8374-cf18498e201d",
+              "name": "edad",
+              "value": "={{ $json.dob.age }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        100
+      ],
+      "id": "441f6716-2ba7-474d-a1aa-c8775cb07347",
+      "name": "Menor o igual de 50"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Mayor de 50",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Menor o igual de 50",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "4d7cec85-4351-4698-b93e-d7fc77ac367e",
+  "meta": null,
+  "id": "TuwyVY1Xly8xyfW4",
+  "tags": []
+}

@@ -1,0 +1,273 @@
+{
+  "name": "P3 Ejercicio 6 - Plan del dia",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9cdc11a9-6ac5-45d7-b31e-8f7b62773d2b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://v2.jokeapi.dev/joke/Programming?type=single&amount=5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        -120
+      ],
+      "id": "89f0fa16-0c06-48f8-b66e-913c2a8079ef",
+      "name": "Chistes"
+    },
+    {
+      "parameters": {
+        "url": "https://bored-api.appbrewery.com/filter?number=5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        120
+      ],
+      "id": "3fb2c261-9456-40dc-8179-293f7aa3110b",
+      "name": "Actividades"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "jokes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        -120
+      ],
+      "id": "ef567f2b-0461-4cbe-8922-419228b7a46a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        480,
+        120
+      ],
+      "id": "62c59a35-5e2f-4744-8aa4-d531cd0878dd",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        720,
+        0
+      ],
+      "id": "d03c0f87-737b-46b4-b056-cc1cd8350f1f",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e682b3b-eef7-476a-a189-b9629b3cb157",
+              "name": "plan",
+              "value": "=Chiste: {{ $json.joke }} | Actividad: {{ $json.activity }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {},
+        "includeOtherFields": true
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        940,
+        0
+      ],
+      "id": "2f6b7af7-b9f4-4b64-83ea-962b61d971f2",
+      "name": "Crear plan"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1pg5vORzOuZIDviaw6itQI-1G3ieEK05Cf01kRZLbC_o",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Planes",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Chiste": "={{ $json.joke }}",
+            "Actividad": "={{ $json.activity }}",
+            "Plan": "={{ $json.plan }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Chiste",
+              "displayName": "Chiste",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Actividad",
+              "displayName": "Actividad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Plan",
+              "displayName": "Plan",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1160,
+        0
+      ],
+      "id": "c4854210-8dba-4854-80be-33ef7657a1f6",
+      "name": "Append row in Planes",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Chistes",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Actividades",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chistes": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actividades": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Crear plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crear plan": {
+      "main": [
+        [
+          {
+            "node": "Append row in Planes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "76090ad8-f2cd-4c48-88f5-06104cad55ae",
+  "meta": null,
+  "id": "HcGsGVxI77GfGiDR",
+  "tags": []
+}

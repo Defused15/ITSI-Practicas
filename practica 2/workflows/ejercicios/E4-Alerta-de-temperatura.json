@@ -1,0 +1,181 @@
+{
+  "name": "P2 Ejercicio 4 - Alerta de temperatura",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "101f1236-1d66-4f86-aa45-372a4b11c5e8",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.open-meteo.com/v1/forecast?latitude=40.4168&longitude=-3.7038&current=temperature_2m&timezone=auto",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "aa5140e2-5e26-42ee-ad0f-521234cfca19",
+      "name": "Temperatura Madrid"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "fff36c37-2756-4940-b4ca-7aad461bd7ab",
+              "leftValue": "={{ $json.current.temperature_2m }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "a898a597-c73d-44a8-b490-5f1146c8d5a7",
+      "name": "Mayor de 30"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "dde8b6a7-8345-4213-a740-05db09402d0d",
+              "name": "estado",
+              "value": "Alerta: calor extremo",
+              "type": "string"
+            },
+            {
+              "id": "6ecc7670-ddcb-4c1b-a468-baf680c067a1",
+              "name": "temperatura",
+              "value": "={{ $json.current.temperature_2m }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        -100
+      ],
+      "id": "bd0ae3bd-29f5-4c73-81b8-93ef2f340bb4",
+      "name": "Alerta"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8d9f06d4-8d97-45f3-9188-3a4eac941454",
+              "name": "estado",
+              "value": "Temperatura normal",
+              "type": "string"
+            },
+            {
+              "id": "4a068a7f-3051-457e-a4c6-49def714c606",
+              "name": "temperatura",
+              "value": "={{ $json.current.temperature_2m }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        100
+      ],
+      "id": "4f83760f-6f6d-45ba-86b9-d7a024b6bbef",
+      "name": "Normal"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Temperatura Madrid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Temperatura Madrid": {
+      "main": [
+        [
+          {
+            "node": "Mayor de 30",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mayor de 30": {
+      "main": [
+        [
+          {
+            "node": "Alerta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Normal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3258836c-4c75-44e6-8b7e-7c2adbe57894",
+  "meta": null,
+  "id": "ji73ohZLolaDMq8l",
+  "tags": []
+}

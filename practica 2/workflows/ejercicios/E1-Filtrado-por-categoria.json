@@ -1,0 +1,207 @@
+{
+  "name": "P2 Ejercicio 1 - Filtrado por categoria",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "6b7add88-969e-4e8b-bd83-f1fc03dcc797",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://v2.jokeapi.dev/joke/Programming,Misc?type=single&amount=5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "ead4f4f0-e6ca-4ee8-bfd2-a8f13c59d582",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "jokes",
+        "options": {},
+        "include": "allOtherFields"
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "73af6754-74e5-4e03-af77-94599cf70b5a",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "52172be5-5846-4f24-a121-90b6e317a47b",
+              "leftValue": "={{ $json.jokes.category }}",
+              "rightValue": "Programming",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "eb99b1b8-3a02-4ee8-822e-097f6f877557",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6b9e3f67-0b2e-4471-934e-fe3b4e5040d1",
+              "name": "categoria",
+              "value": "Programming",
+              "type": "string"
+            },
+            {
+              "id": "f51e1a5e-8e6e-4d66-aaa4-a53765f4d55e",
+              "name": "chiste",
+              "value": "={{ $json.jokes.joke }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -100
+      ],
+      "id": "eebf078f-9fe1-4984-ba4a-0c98ad1e0168",
+      "name": "Programming"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "96a90319-d4e0-42a3-bf3c-7c622ef56f5c",
+              "name": "categoria",
+              "value": "Misc",
+              "type": "string"
+            },
+            {
+              "id": "830c6d54-72fb-4dd8-81df-16624fadf325",
+              "name": "chiste",
+              "value": "={{ $json.jokes.joke }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        100
+      ],
+      "id": "98e80fbb-422e-4469-969c-c5375f7784db",
+      "name": "Misc"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Programming",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Misc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1cd18007-9a03-47e7-97b2-558a105f46b6",
+  "meta": null,
+  "id": "bFGV2FLmKdwg0YBq",
+  "tags": []
+}

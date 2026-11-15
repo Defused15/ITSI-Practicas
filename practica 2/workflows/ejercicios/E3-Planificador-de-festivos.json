@@ -1,0 +1,168 @@
+{
+  "name": "P2 Ejercicio 3 - Planificador de festivos",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "99eb7b4d-cff5-4c9b-bbe8-a0e2881a5804",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://date.nager.at/api/v3/PublicHolidays/2027/ES",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "51080568-3f1b-44f6-b2d3-8765ff95ca8a",
+      "name": "Festivos 2027"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cd95a46c-e4f3-4e91-a20d-67b4c59e2dc6",
+              "leftValue": "={{ $json.global }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "8706caa9-71ed-4fd4-b3d1-df2e1e6abf97",
+      "name": "Es nacional"
+    },
+    {
+      "parameters": {
+        "url": "https://bored-api.appbrewery.com/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        -100
+      ],
+      "id": "211b2ebd-8509-46b6-8125-17be8e8ba4ff",
+      "name": "Actividad aleatoria"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3d962d63-ca8b-4729-b0a7-d28ee51b6405",
+              "name": "name",
+              "value": "={{ $('Es nacional').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "415a6812-874a-467c-aa45-baf64b589b24",
+              "name": "date",
+              "value": "={{ $('Es nacional').item.json.date }}",
+              "type": "string"
+            },
+            {
+              "id": "852d7425-aced-486b-b6e2-d2125f6ccead",
+              "name": "activity",
+              "value": "={{ $json.activity }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -100
+      ],
+      "id": "7efc3618-34fb-4fb0-be31-f9c2d197c102",
+      "name": "Plan del festivo"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Festivos 2027",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Festivos 2027": {
+      "main": [
+        [
+          {
+            "node": "Es nacional",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Es nacional": {
+      "main": [
+        [
+          {
+            "node": "Actividad aleatoria",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Actividad aleatoria": {
+      "main": [
+        [
+          {
+            "node": "Plan del festivo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "17d307f7-94dc-4fd6-8ccf-fd13a9439135",
+  "meta": null,
+  "id": "nDCHVE2V7erwHrTt",
+  "tags": []
+}

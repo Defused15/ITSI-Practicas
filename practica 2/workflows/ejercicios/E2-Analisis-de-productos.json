@@ -1,0 +1,192 @@
+{
+  "name": "P2 Ejercicio 2 - Analisis de productos",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2d5e0398-5113-42cf-acb7-840814de56fb",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://fakestoreapi.com/products",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "6c007645-6f5a-45db-b653-7e1c40d88190",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "574f5bd2-227e-4caf-89e2-7a367fff7bc4",
+              "leftValue": "={{ $json.price }}",
+              "rightValue": 100,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "a715104f-ffdc-49c1-beab-cb04f610856a",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d6007be0-54d5-4d4d-99d9-63f2a2f06753",
+              "name": "producto",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "c6a77c97-9bd4-48e1-8414-24aef5c9a4aa",
+              "name": "precio",
+              "value": "={{ $json.price }}",
+              "type": "number"
+            },
+            {
+              "id": "e1781391-0551-457b-a89c-b903e9630555",
+              "name": "etiqueta",
+              "value": "Producto Premium",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        -100
+      ],
+      "id": "1292c264-c95a-45e9-beb6-3b5368127037",
+      "name": "Producto Premium"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "795a33d3-a169-4518-8bba-54c4eeef4a20",
+              "name": "producto",
+              "value": "={{ $json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "8a1fb512-6119-487d-8477-b71f45739a96",
+              "name": "precio",
+              "value": "={{ $json.price }}",
+              "type": "number"
+            },
+            {
+              "id": "1ca894e9-8739-4bed-90f7-da98a9b4eacf",
+              "name": "etiqueta",
+              "value": "Producto Estándar",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        680,
+        100
+      ],
+      "id": "98cba4b2-3c74-4b9c-9d76-882cc99fda22",
+      "name": "Producto Estandar"
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Producto Premium",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Producto Estandar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2f3b2f89-2954-4931-bb0f-25d860f31d92",
+  "meta": null,
+  "id": "xzyK1WoiJO1l5w0Q",
+  "tags": []
+}

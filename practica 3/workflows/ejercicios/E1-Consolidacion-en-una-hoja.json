@@ -1,0 +1,388 @@
+{
+  "name": "P3 Ejercicio 1 - Consolidacion en una hoja",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "af027b2f-9007-470c-bc0b-33ddd460f0a0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://v2.jokeapi.dev/joke/Programming,Misc,Dark?type=single&amount=10",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "b104ef85-3178-478d-be70-cf8d01287eca",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "jokes",
+        "options": {},
+        "include": "allOtherFields"
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1.1,
+      "position": [
+        440,
+        0
+      ],
+      "id": "8d3dbdaa-e27a-4c58-93fb-6aab7bdddf98",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "55f57c9e-82a2-40de-a2e0-34944893c6d9",
+                    "leftValue": "={{ $json.jokes.category }}",
+                    "rightValue": "Programming",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Programming"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "8f1afcb7-44b7-4a91-b8d3-3992ca3dc448",
+                    "leftValue": "={{ $json.jokes.category }}",
+                    "rightValue": "Misc",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Misc"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "3dac559d-17cb-46d9-b01e-84c45408a94c",
+                    "leftValue": "={{ $json.jokes.category }}",
+                    "rightValue": "Dark",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Dark"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        660,
+        0
+      ],
+      "id": "f6607083-a788-44f6-af19-180c2a60a385",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "75653c0b-d7a4-4427-90c3-8643d687e224",
+              "name": "categoria_original",
+              "value": "Programming",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {},
+        "includeOtherFields": true
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        -200
+      ],
+      "id": "da01f8e5-c152-4dc5-8539-0044906dc028",
+      "name": "Categoria Programming"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0f93dfcf-9ad8-42af-b8aa-c50954a9a10a",
+              "name": "categoria_original",
+              "value": "Misc",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {},
+        "includeOtherFields": true
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        0
+      ],
+      "id": "feb39666-dcf7-482c-a08a-f3b502211e38",
+      "name": "Categoria Misc"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "087bdebd-9226-4043-90b8-af802d1804f6",
+              "name": "categoria_original",
+              "value": "Dark",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {},
+        "includeOtherFields": true
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        900,
+        200
+      ],
+      "id": "fa40a17d-3198-469f-a032-9bba1d13e980",
+      "name": "Categoria Dark"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1Yg4MYr930ZeSz7I0InCU7F5XQk0PbQF00lNoKVx98OY",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Todos",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $json.jokes.id }}",
+            "Chiste": "={{ $json.jokes.joke }}",
+            "Fecha de Procesamiento": "={{ $now }}",
+            "categoria_original": "={{ $json.categoria_original }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Chiste",
+              "displayName": "Chiste",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha de Procesamiento",
+              "displayName": "Fecha de Procesamiento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "categoria_original",
+              "displayName": "categoria_original",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1140,
+        0
+      ],
+      "id": "32f0b9e5-902b-4664-92ef-e46f6f0bfcdd",
+      "name": "Append row in Todos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Ry1WZoBpXVRuCaaJ",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": null,
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Categoria Programming",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categoria Misc",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categoria Dark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categoria Programming": {
+      "main": [
+        [
+          {
+            "node": "Append row in Todos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categoria Misc": {
+      "main": [
+        [
+          {
+            "node": "Append row in Todos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categoria Dark": {
+      "main": [
+        [
+          {
+            "node": "Append row in Todos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "50c33cb2-ecc3-400f-b4be-5e9edf0a2ea5",
+  "meta": null,
+  "id": "CLEoS7F2QQLMLZCn",
+  "tags": []
+}
