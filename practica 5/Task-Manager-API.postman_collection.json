@@ -1,0 +1,178 @@
+{
+  "info": {
+    "name": "Task Manager API - Práctica 5",
+    "description": "API de tareas (Flask + PostgreSQL + RabbitMQ) levantada con Docker Compose.\n\n- `baseUrl`: URL de la API (por defecto http://localhost:5001).\n- `taskId`: se rellena automáticamente al ejecutar **Crear tarea**.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:5001" },
+    { "key": "taskId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Tareas",
+      "item": [
+        {
+          "name": "Crear tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const task = pm.response.json().task;",
+                  "pm.test('Devuelve la tarea con id', () => pm.expect(task.id).to.be.a('number'));",
+                  "pm.test('La tarea no está completada', () => pm.expect(task.done).to.be.false);",
+                  "pm.collectionVariables.set('taskId', task.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Configurar sistema multi-contenedor\",\n  \"description\": \"Usar Docker Compose\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] },
+            "description": "Crea una tarea, la guarda en PostgreSQL y publica un mensaje en la cola `task_created`. Guarda el id en la variable `taskId`."
+          }
+        },
+        {
+          "name": "Listar tareas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Devuelve un array de tareas', () => pm.expect(pm.response.json().tasks).to.be.an('array'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+          }
+        },
+        {
+          "name": "Obtener tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Devuelve la tarea pedida', () => pm.expect(String(pm.response.json().task.id)).to.eql(String(pm.collectionVariables.get('taskId'))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+          }
+        },
+        {
+          "name": "Completar tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('La tarea queda completada', () => pm.expect(pm.response.json().task.done).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}/complete", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}", "complete"] },
+            "description": "Marca la tarea como completada y publica un mensaje en la cola `task_completed`."
+          }
+        },
+        {
+          "name": "Borrar tarea",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/{{taskId}}", "host": ["{{baseUrl}}"], "path": ["tasks", "{{taskId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Validaciones (errores)",
+      "item": [
+        {
+          "name": "Crear tarea sin title (400)",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"description\": \"sin título\"\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+          }
+        },
+        {
+          "name": "Crear tarea con description no string (400)",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 400', () => pm.response.to.have.status(400));"] } }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"title\": \"Tarea\",\n  \"description\": 123\n}", "options": { "raw": { "language": "json" } } },
+            "url": { "raw": "{{baseUrl}}/tasks", "host": ["{{baseUrl}}"], "path": ["tasks"] }
+          }
+        },
+        {
+          "name": "Obtener tarea inexistente (404)",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"] } }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/999999", "host": ["{{baseUrl}}"], "path": ["tasks", "999999"] }
+          }
+        },
+        {
+          "name": "Completar tarea inexistente (404)",
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test('Status 404', () => pm.response.to.have.status(404));"] } }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/tasks/999999/complete", "host": ["{{baseUrl}}"], "path": ["tasks", "999999", "complete"] }
+          }
+        }
+      ]
+    }
+  ]
+}
